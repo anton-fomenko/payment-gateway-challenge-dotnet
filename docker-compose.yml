@@ -12,4 +12,15 @@ services:
       - type: bind
         source: ./imposters
         target: /imposters
-      
+  payment_gateway:
+    container_name: payment_gateway
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"  # Maps port 80 in the container to port 5000 on the host
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - BankOptions__BaseUri=http://bank_simulator:8080
+    depends_on:
+      - bank_simulator  # Ensures bank_simulator starts before payment_gateway
